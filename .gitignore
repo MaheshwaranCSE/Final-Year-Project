@@ -17,6 +17,8 @@ dist-ssr/
 
 # Java / Spring Boot / Maven
 backend/target/
+backend/data/
+data/
 target/
 *.class
 *.jar

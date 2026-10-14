@@ -13,6 +13,7 @@ import {
   Settings,
   Shield,
   Server,
+  Video,
   X,
   LucideIcon,
 } from 'lucide-react';
@@ -67,6 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           icon: AlertTriangle,
           alert: tamperedCount > 0 ? `${tamperedCount}` : undefined,
         },
+        { label: 'Camera Monitor', path: '/cameras', icon: Video, badge: 'LIVE' },
       ],
     },
     {

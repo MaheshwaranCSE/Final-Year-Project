@@ -15,6 +15,7 @@ const ChainOfCustodyPage = lazy(() => import('./pages/ChainOfCustodyPage'));
 const BlockchainPage = lazy(() => import('./pages/BlockchainPage'));
 const AIAnalysisPage = lazy(() => import('./pages/AIAnalysisPage'));
 const IntegrityMonitorPage = lazy(() => import('./pages/IntegrityMonitorPage'));
+const CameraMonitorPage = lazy(() => import('./pages/CameraMonitorPage'));
 const AuditLogsPage = lazy(() => import('./pages/AuditLogsPage'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage'));
 const UsersPage = lazy(() => import('./pages/UsersPage'));
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="/signal-laboratory" element={<Navigate to="/ai-analysis" replace />} />
             <Route path="/signals" element={<Navigate to="/ai-analysis" replace />} />
             <Route path="/integrity" element={<IntegrityMonitorPage />} />
+            <Route path="/cameras" element={<CameraMonitorPage />} />
             <Route path="/audit" element={<AuditLogsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/users" element={<UsersPage />} />
