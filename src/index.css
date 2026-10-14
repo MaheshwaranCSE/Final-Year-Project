@@ -1,0 +1,164 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #060911;
+  --color-card: #0C101D;
+  --color-card-border: rgba(255, 255, 255, 0.08);
+  --color-card-raised: #111729;
+  --color-card-raised-border: rgba(255, 255, 255, 0.12);
+  --color-divider: rgba(255, 255, 255, 0.06);
+  --color-row-hover: rgba(255, 255, 255, 0.03);
+
+  --color-text-primary: #E6EAF2;
+  --color-text-secondary: #9AA6BA;
+  --color-text-muted: #7C889D;
+
+  --color-accent-cyan: #22D3EE;
+  --color-accent-blue: #2563EB;
+  --color-accent-blue-hover: #1D4ED8;
+
+  --color-status-success: #10B981;
+  --color-status-warning: #F59E0B;
+  --color-status-danger: #EF4444;
+  --color-status-info: #3B82F6;
+
+  --color-obsidian-950: #060911;
+  --color-obsidian-900: #080C16;
+  --color-obsidian-850: #0B101E;
+  --color-obsidian-800: #0C101D;
+  --color-obsidian-750: #101626;
+  --color-obsidian-700: #131A2E;
+  --color-obsidian-border: rgba(255, 255, 255, 0.08);
+  --color-obsidian-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-obsidian-border-bright: rgba(255, 255, 255, 0.15);
+
+  --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --breakpoint-2xl: 1440px;
+}
+
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html, body {
+    background-color: #060911;
+    color: #E6EAF2;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Fundamental button reset */
+  button {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid rgba(34, 211, 238, 0.6);
+    outline-offset: 2px;
+  }
+
+  input, select, textarea {
+    font-family: inherit;
+    color: inherit;
+  }
+
+  /* Refined scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #060911;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1E293B;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer utilities {
+  .sidebar-responsive-width {
+    width: 72px;
+  }
+  @media (min-width: 1440px) {
+    .sidebar-responsive-width {
+      width: 248px;
+    }
+  }
+
+  .main-shell-padding {
+    padding-left: 0px;
+  }
+  @media (min-width: 1024px) {
+    .main-shell-padding {
+      padding-left: 72px;
+    }
+  }
+  @media (min-width: 1440px) {
+    .main-shell-padding {
+      padding-left: 248px;
+    }
+  }
+
+  .show-on-expanded {
+    display: none;
+  }
+  @media (min-width: 1440px) {
+    .show-on-expanded {
+      display: block;
+    }
+  }
+
+  .flex-on-expanded {
+    display: none;
+  }
+  @media (min-width: 1440px) {
+    .flex-on-expanded {
+      display: flex;
+    }
+  }
+
+  .hide-on-expanded {
+    display: block;
+  }
+  @media (min-width: 1440px) {
+    .hide-on-expanded {
+      display: none;
+    }
+  }
+}
+

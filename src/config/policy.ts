@@ -1,0 +1,1 @@
+export const AI_DETECTION_THRESHOLD = 45;

@@ -1,0 +1,49 @@
+# Security & Credentials - DO NOT COMMIT SENSITIVE KEYS
+*.pem
+*.key
+*.cert
+*.id_rsa
+*.id_ed25519
+.env
+.env.*
+!.env.example
+
+# Node / Frontend Dependencies & Builds
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+
+# Java / Spring Boot / Maven
+backend/target/
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+
+# Packaging & Archives
+*.tar.gz
+*.zip
+*.tar
+*.bak
+
+# Logs & Debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS & Editor Files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
