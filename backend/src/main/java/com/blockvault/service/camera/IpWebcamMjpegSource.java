@@ -101,6 +101,7 @@ public class IpWebcamMjpegSource implements CameraSource {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(3000);
             conn.setReadTimeout(3000);
+            conn.setInstanceFollowRedirects(false);
             conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", "BlockVault-Probe/1.0");
 
@@ -213,6 +214,7 @@ public class IpWebcamMjpegSource implements CameraSource {
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(4000);
                 conn.setReadTimeout(5000);
+                conn.setInstanceFollowRedirects(false);
                 conn.setRequestProperty("User-Agent", "BlockVault-Acquisition/1.0");
                 applyBasicAuthIfConfigured(conn);
 

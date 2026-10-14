@@ -116,6 +116,7 @@ public class CameraStreamProxyController {
         headers.set("Expires", "0");
         headers.set("Connection", "keep-alive");
         headers.set("X-Stream-Disclaimer", "LIVE PREVIEW - not preserved evidence");
+        headers.set("Referrer-Policy", "no-referrer");
 
         return new ResponseEntity<>(responseBody, headers, HttpStatus.OK);
     }

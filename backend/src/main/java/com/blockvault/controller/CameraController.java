@@ -286,6 +286,7 @@ public class CameraController {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(3500);
             conn.setReadTimeout(3500);
+            conn.setInstanceFollowRedirects(false);
             conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", "BlockVault-Probe/1.0");
 
@@ -333,6 +334,7 @@ public class CameraController {
                 HttpURLConnection conn = (HttpURLConnection) sub.openConnection();
                 conn.setConnectTimeout(1500);
                 conn.setReadTimeout(1500);
+                conn.setInstanceFollowRedirects(false);
                 if (user != null && !user.trim().isEmpty()) {
                     String creds = user + ":" + (pass != null ? pass : "");
                     conn.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(creds.getBytes(StandardCharsets.UTF_8)));

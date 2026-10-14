@@ -86,6 +86,16 @@ public class SqsAlertWorker {
                 if (opt.isPresent()) {
                     CameraIncidentEntity incident = opt.get();
 
+                    if (incident.isSnsPublished()) {
+                        log.info("Incident {} was already published to SNS. Suppressing duplicate broadcast.", incidentId);
+                        DeleteMessageRequest delReq = DeleteMessageRequest.builder()
+                                .queueUrl(sqsQueueUrl.trim())
+                                .receiptHandle(receiptHandle)
+                                .build();
+                        sqsClient.deleteMessage(delReq);
+                        return;
+                    }
+
                     if (snsClient != null && snsTopicArn != null && !snsTopicArn.trim().isEmpty()) {
                         String emailSubject = String.format("[BlockVault Alert - %s] %s", incident.getSeverity(), incident.getTitle());
                         String emailBody = String.format("""
