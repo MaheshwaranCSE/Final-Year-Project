@@ -61,6 +61,7 @@ import {
   ScanEye,
   Activity,
   FolderOpen,
+  Camera,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useForensicStore } from '../stores/useForensicStore';
@@ -74,6 +75,7 @@ import { PageHeader } from '../components/common/PageHeader';
 import { KpiCard } from '../components/common/KpiCard';
 import { HashChip } from '../components/common/HashChip';
 import { StatusBadge } from '../components/common/StatusBadge';
+import { CameraCaptureModal } from '../components/common/CameraCaptureModal';
 
 export interface StagedEvidenceItem {
   id: string;
@@ -176,6 +178,7 @@ export const EvidencePage: React.FC = () => {
 
   // Multi-File Upload & AI Screening Intake Wizard State
   const [openWizard, setOpenWizard] = useState(false);
+  const [openCamera, setOpenCamera] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [stagedFiles, setStagedFiles] = useState<StagedEvidenceItem[]>([]);
   const [autoAiScan, setAutoAiScan] = useState(true);
@@ -655,16 +658,27 @@ export const EvidencePage: React.FC = () => {
         subtitle="Cryptographically verified digital evidence repository anchored to the Proof-of-Authority ledger."
         actions={
           canIngest && (
-            <button
-              onClick={() => {
-                resetWizard();
-                setOpenWizard(true);
-              }}
-              className="h-9 px-4 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium text-xs shadow-sm transition-all active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
-            >
-              <UploadCloud className="w-4 h-4" />
-              <span>Ingest Evidence</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setOpenCamera(true);
+                }}
+                className="h-9 px-3.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 font-medium text-xs shadow-sm transition-all active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
+              >
+                <Camera className="w-4 h-4 text-cyan-400" />
+                <span>Live Camera</span>
+              </button>
+              <button
+                onClick={() => {
+                  resetWizard();
+                  setOpenWizard(true);
+                }}
+                className="h-9 px-4 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium text-xs shadow-sm transition-all active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
+              >
+                <UploadCloud className="w-4 h-4" />
+                <span>Ingest Evidence</span>
+              </button>
+            </div>
           )
         }
       />
@@ -1343,6 +1357,35 @@ export const EvidencePage: React.FC = () => {
                     size="small"
                     sx={{ mt: 1.5, bgcolor: 'rgba(59, 130, 246, 0.15)', color: '#60A5FA', fontWeight: 600 }}
                   />
+
+                  <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenCamera(true);
+                      }}
+                      startIcon={<Camera size={15} color="#22D3EE" />}
+                      sx={{
+                        color: '#22D3EE',
+                        borderColor: 'rgba(6, 182, 212, 0.4)',
+                        bgcolor: 'rgba(6, 182, 212, 0.08)',
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        fontSize: '0.82rem',
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 1.5,
+                        '&:hover': {
+                          bgcolor: 'rgba(6, 182, 212, 0.16)',
+                          borderColor: '#22D3EE',
+                        },
+                      }}
+                    >
+                      Capture Live via Optical Camera
+                    </Button>
+                  </Box>
                 </Box>
               </Grid>
 
@@ -2342,6 +2385,18 @@ export const EvidencePage: React.FC = () => {
           </DialogActions>
         </Dialog>
       )}
+
+      {/* Forensic Camera Capture Modal */}
+      <CameraCaptureModal
+        open={openCamera}
+        onClose={() => setOpenCamera(false)}
+        onCapture={(file) => {
+          handleFilesAdded([file]);
+          if (!openWizard) {
+            setOpenWizard(true);
+          }
+        }}
+      />
     </PageContainer>
   );
 };

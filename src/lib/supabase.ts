@@ -1,6 +1,13 @@
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { apiAuth } from './apiAuth';
 import { analyzeMedia } from './aiDetection';
 import { AI_DETECTION_THRESHOLD } from '../config/policy';
+
+// ─── Real Supabase Client Configuration ──────────────────────────────────────
+export const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://esjztdqvadqjtlevcuab.supabase.co';
+export const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_XiLFFM5tbIgBYjvB9WOoOA_GOFs1BaK';
+
+export const supabaseClient: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Role = 'user' | 'police' | 'doctor' | 'court' | 'admin' | 'investigator';
@@ -273,13 +280,33 @@ export const supabase = {
           };
         }
 
-        // 4. All checks passed — store the blob URL
+        // 4. All checks passed — upload to real Supabase storage
+        try {
+          const cleanPath = path.replace(/^\/+/, '');
+          const { data, error: sbErr } = await supabaseClient.storage
+            .from(_bucket || 'evidence')
+            .upload(cleanPath, file, { upsert: true });
+
+          if (!sbErr && data) {
+            const { data: pubData } = supabaseClient.storage.from(_bucket || 'evidence').getPublicUrl(cleanPath);
+            setLS(`mock_file_${path}`, pubData.publicUrl);
+            return { error: null, data: { path: pubData.publicUrl } };
+          }
+        } catch (uploadEx) {
+          console.warn('Real Supabase storage upload warning (falling back to local):', uploadEx);
+        }
+
         const url = URL.createObjectURL(file);
         setLS(`mock_file_${path}`, url);
         return { error: null, data: { path } };
       },
 
       getPublicUrl: (path: string) => {
+        try {
+          const cleanPath = path.replace(/^\/+/, '');
+          const { data } = supabaseClient.storage.from(_bucket || 'evidence').getPublicUrl(cleanPath);
+          if (data?.publicUrl) return { data };
+        } catch {}
         const url = getLS(`mock_file_${path}`, 'https://via.placeholder.com/300');
         return { data: { publicUrl: url } };
       },
