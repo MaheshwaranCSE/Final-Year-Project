@@ -1,14 +1,28 @@
-const getApiUrl = () => {
-  if (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return `${window.location.protocol}//${window.location.hostname}:8080/api/auth`;
+export const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('blockvault_backend_url');
+    if (custom && custom.trim()) {
+      return `${custom.trim().replace(/\/+$/, '')}/auth`;
+    }
+    const envUrl = (import.meta as any).env?.VITE_API_URL;
+    if (envUrl && envUrl.trim()) {
+      return envUrl.trim().replace(/\/+$/, '');
+    }
+    if (
+      window.location.hostname &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1' &&
+      !window.location.hostname.includes('vercel.app')
+    ) {
+      return `${window.location.protocol}//${window.location.hostname}:8080/api/auth`;
+    }
   }
   return 'http://localhost:8080/api/auth';
 };
 
-const API_URL = (import.meta as any).env?.VITE_API_URL || getApiUrl();
 export const apiAuth = {
   login: async (email: string, password: string) => {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`${getApiUrl()}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -19,7 +33,7 @@ export const apiAuth = {
   },
   
   register: async (email: string, password: string, name: string, role: string) => {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(`${getApiUrl()}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, name, role })
@@ -30,7 +44,7 @@ export const apiAuth = {
   },
 
   me: async (token: string) => {
-    const res = await fetch(`${API_URL}/me`, {
+    const res = await fetch(`${getApiUrl()}/me`, {
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',

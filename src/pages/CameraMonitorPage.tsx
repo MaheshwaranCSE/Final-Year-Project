@@ -18,7 +18,7 @@ import { CameraRegistrationModal } from '../components/camera/CameraRegistration
 import { CameraIncidentDrawer } from '../components/camera/CameraIncidentDrawer';
 import { AwsAlertSettingsModal } from '../components/camera/AwsAlertSettingsModal';
 import { CameraSegmentsModal } from '../components/camera/CameraSegmentsModal';
-import { CameraSourceDto } from '../services/cameraApiService';
+import { CameraSourceDto, cameraApiService } from '../services/cameraApiService';
 
 export default function CameraMonitorPage() {
   const {
@@ -34,6 +34,7 @@ export default function CameraMonitorPage() {
     setIncidentDrawerOpen,
     isAwsSettingsModalOpen,
     setAwsSettingsModalOpen,
+    error,
   } = useCameraStore();
 
   const [selectedCameraForSegments, setSelectedCameraForSegments] =
@@ -144,6 +145,26 @@ export default function CameraMonitorPage() {
           </button>
         </div>
       </div>
+
+      {/* Backend Connection Alert if Error */}
+      {error && (
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+          <div className="space-y-1 text-xs font-mono">
+            <div className="font-bold text-rose-300">
+              Backend Connection Warning: Unable to reach {cameraApiService.getBaseUrl()}
+            </div>
+            <p className="text-zinc-400 text-[11px] leading-relaxed">
+              Ensure your local Spring Boot backend is active on <code className="text-cyan-400">http://localhost:8080</code>.
+              {typeof window !== 'undefined' && window.location.hostname.includes('vercel.app') && (
+                <span className="block text-amber-300 mt-1">
+                  Notice: You are viewing BlockVault on Vercel. Because your Android IP Webcam is located on your private local network, open BlockVault locally on this PC at <strong className="text-white">http://localhost:3000/cameras</strong> to access the local backend engine and live stream.
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* KPI Cards Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">

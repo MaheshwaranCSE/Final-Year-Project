@@ -188,14 +188,14 @@ export const CameraRegistrationModal: React.FC<CameraRegistrationModalProps> = (
                   Stream URL (MJPEG /videofeed or /video) *
                 </label>
                 <span className="text-[10px] font-mono text-zinc-500">
-                  e.g. http://192.168.1.50:8080/video
+                  IPv4 or IPv6 (e.g. http://192.168.1.x:8080/video or http://[ipv6]:8080/video)
                 </span>
               </div>
               <div className="mt-1 flex gap-2">
                 <input
-                  type="url"
+                  type="text"
                   required
-                  placeholder="http://192.168.1.xxx:8080/video"
+                  placeholder="http://192.168.1.xxx:8080/video or http://[2001:...]:8080/video"
                   value={streamUrl}
                   onChange={(e) => setStreamUrl(e.target.value)}
                   className="flex-1 bg-[#060911] border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500/60"

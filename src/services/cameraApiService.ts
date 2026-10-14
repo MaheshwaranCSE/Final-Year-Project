@@ -107,19 +107,27 @@ export interface ProbeResult {
   resolvedIp?: string;
 }
 
-const getBaseApiUrl = () => {
-  if (
-    typeof window !== 'undefined' &&
-    window.location.hostname &&
-    window.location.hostname !== 'localhost' &&
-    window.location.hostname !== '127.0.0.1'
-  ) {
-    return `${window.location.protocol}//${window.location.hostname}:8080/api`;
+export const getBaseApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('blockvault_backend_url');
+    if (custom && custom.trim()) {
+      return custom.trim().replace(/\/+$/, '');
+    }
+    const envUrl = (import.meta as any).env?.VITE_BACKEND_URL;
+    if (envUrl && envUrl.trim()) {
+      return envUrl.trim().replace(/\/+$/, '');
+    }
+    if (
+      window.location.hostname &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1' &&
+      !window.location.hostname.includes('vercel.app')
+    ) {
+      return `${window.location.protocol}//${window.location.hostname}:8080/api`;
+    }
   }
   return 'http://localhost:8080/api';
 };
-
-const API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || getBaseApiUrl();
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('auth_token') || '';
@@ -130,10 +138,10 @@ const getAuthHeaders = () => {
 };
 
 export const cameraApiService = {
-  getBaseUrl: () => API_BASE,
+  getBaseUrl: () => getBaseApiUrl(),
 
   fetchCameras: async (): Promise<CameraSourceDto[]> => {
-    const res = await fetch(`${API_BASE}/cameras`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error('Failed to fetch camera inventory');
@@ -141,7 +149,7 @@ export const cameraApiService = {
   },
 
   getCamera: async (cameraId: string): Promise<CameraSourceDto> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error(`Camera ${cameraId} not found`);
@@ -149,7 +157,7 @@ export const cameraApiService = {
   },
 
   registerCamera: async (req: CameraRegisterReq): Promise<CameraSourceDto> => {
-    const res = await fetch(`${API_BASE}/cameras`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(req),
@@ -160,7 +168,7 @@ export const cameraApiService = {
   },
 
   updateCamera: async (cameraId: string, req: Partial<CameraRegisterReq>): Promise<CameraSourceDto> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(req),
@@ -171,7 +179,7 @@ export const cameraApiService = {
   },
 
   toggleCamera: async (cameraId: string): Promise<CameraSourceDto> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/toggle`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/toggle`, {
       method: 'POST',
       headers: getAuthHeaders(),
     });
@@ -181,7 +189,7 @@ export const cameraApiService = {
   },
 
   startRecording: async (cameraId: string, sessionId?: string): Promise<any> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/record/start`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/record/start`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({ sessionId }),
@@ -192,7 +200,7 @@ export const cameraApiService = {
   },
 
   stopRecording: async (cameraId: string): Promise<any> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/record/stop`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/record/stop`, {
       method: 'POST',
       headers: getAuthHeaders(),
     });
@@ -202,7 +210,7 @@ export const cameraApiService = {
   },
 
   revokeConsent: async (cameraId: string, reason?: string): Promise<any> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/consent/revoke`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/consent/revoke`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({ reason }),
@@ -213,7 +221,7 @@ export const cameraApiService = {
   },
 
   probeCamera: async (req: ProbeReq): Promise<ProbeResult> => {
-    const res = await fetch(`${API_BASE}/cameras/probe`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/probe`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(req),
@@ -223,7 +231,7 @@ export const cameraApiService = {
   },
 
   fetchStreamToken: async (cameraId: string): Promise<{ token: string; expiresInSeconds: number }> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/token`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/token`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error('Failed to acquire stream token');
@@ -231,16 +239,16 @@ export const cameraApiService = {
   },
 
   getLiveStreamUrl: (cameraId: string, token: string) => {
-    return `${API_BASE}/cameras/${cameraId}/stream?token=${encodeURIComponent(token)}`;
+    return `${getBaseApiUrl()}/cameras/${cameraId}/stream?token=${encodeURIComponent(token)}`;
   },
 
   getSnapshotUrl: (cameraId: string, token?: string) => {
     const q = token ? `?token=${encodeURIComponent(token)}` : '';
-    return `${API_BASE}/cameras/${cameraId}/snapshot${q}`;
+    return `${getBaseApiUrl()}/cameras/${cameraId}/snapshot${q}`;
   },
 
   fetchSegments: async (cameraId: string): Promise<EvidenceSegmentDto[]> => {
-    const res = await fetch(`${API_BASE}/cameras/${cameraId}/segments`, {
+    const res = await fetch(`${getBaseApiUrl()}/cameras/${cameraId}/segments`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error('Failed to fetch segments');
@@ -253,7 +261,7 @@ export const cameraApiService = {
     if (status) params.set('status', status);
 
     const qs = params.toString() ? `?${params.toString()}` : '';
-    const res = await fetch(`${API_BASE}/incidents${qs}`, {
+    const res = await fetch(`${getBaseApiUrl()}/incidents${qs}`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error('Failed to fetch incidents');
@@ -261,7 +269,7 @@ export const cameraApiService = {
   },
 
   resolveIncident: async (incidentId: string, notes?: string): Promise<CameraIncidentDto> => {
-    const res = await fetch(`${API_BASE}/incidents/${incidentId}/resolve`, {
+    const res = await fetch(`${getBaseApiUrl()}/incidents/${incidentId}/resolve`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({ notes }),
@@ -271,7 +279,7 @@ export const cameraApiService = {
   },
 
   fetchAlertPipelineStatus: async (): Promise<AlertPipelineStatusDto> => {
-    const res = await fetch(`${API_BASE}/incidents/alerts/status`, {
+    const res = await fetch(`${getBaseApiUrl()}/incidents/alerts/status`, {
       headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error('Failed to fetch alert pipeline status');
