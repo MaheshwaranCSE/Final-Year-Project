@@ -8,6 +8,7 @@ import {
   ChevronDown,
   UserCheck,
   Shield,
+  Video,
 } from 'lucide-react';
 import {
   Menu,
@@ -125,6 +126,21 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
                 Verified
               </span>
             )}
+          </div>
+
+          {/* Live Camera Monitor Pill in Header */}
+          <div
+            onClick={() => navigate('/cameras')}
+            title="Live Multi-Camera Monitor & Evidence Acquisition Network"
+            className="h-7 px-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 hover:border-cyan-500/60 hover:bg-cyan-500/20 transition-all cursor-pointer flex items-center gap-1.5 text-xs text-cyan-300"
+          >
+            <Video className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-mono text-[11px] font-semibold text-cyan-200">
+              Camera Monitor
+            </span>
+            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+              LIVE
+            </span>
           </div>
 
           {/* Notifications Center */}

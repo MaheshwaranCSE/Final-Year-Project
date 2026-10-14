@@ -14,6 +14,7 @@ import {
   ArrowUpRight,
   Activity,
   Key,
+  Video,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useForensicStore } from '../stores/useForensicStore';
@@ -108,6 +109,14 @@ export const Dashboard: React.FC = () => {
             >
               <UploadCloud className="w-3.5 h-3.5" />
               <span>Ingest Evidence</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/cameras')}
+              className="h-9 px-3.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-xs font-medium transition inline-flex items-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(6,182,212,0.2)]"
+            >
+              <Video className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Camera Monitor</span>
             </button>
           </div>
         }
